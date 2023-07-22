@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Task } from './task.model';
 import { TaskDTO } from './dto/task.dto';
@@ -26,10 +31,14 @@ export class TaskService {
   }
 
   async getTaskById(id: number, loggedInUserId: number): Promise<Task | null> {
-    const task = this.taskModel.findOne({
+    const task = await this.taskModel.findOne({
       where: { id },
     });
-    if ((await task).userId !== loggedInUserId) {
+    if (!task) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    if (task.userId !== loggedInUserId) {
       throw new ForbiddenException(
         'You do not have permission to view this task',
       );
@@ -46,29 +55,62 @@ export class TaskService {
       where: { id },
     });
     if (affectedCount === 0) {
-      throw new Error('Task not found');
+      throw new HttpException('Task not found', HttpStatus.NOT_FOUND);
     }
-    const task = await this.getTaskById(id, loggedInUserId);
+    const task = await this.checkTask(
+      id,
+      loggedInUserId,
+      'You do not have permission to update this task',
+    );
+
+    if (!task) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
 
     if (task.userId !== loggedInUserId) {
       throw new ForbiddenException(
         'You do not have permission to update this task',
       );
     }
-
     return this.taskModel.findByPk(id);
   }
 
   async deleteTask(id: number, loggedInUserId: number): Promise<number> {
-    const task = await this.getTaskById(id, loggedInUserId);
-    if (task) {
-      return this.taskModel.destroy({
-        where: { id },
-      });
-    } else {
-      throw new ForbiddenException(
-        'You do not have permission to delete this task',
-      );
+    const task = await this.taskModel.findOne({
+      where: { id },
+    });
+
+    if (!task) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
+    if (task) {
+      if (task.userId !== loggedInUserId) {
+        throw new ForbiddenException(
+          'You do not have permission to delete this task',
+        );
+      } else {
+        return this.taskModel.destroy({
+          where: { id },
+        });
+      }
+    }
+  }
+
+  async checkTask(
+    id: number,
+    loggedInUserId: number,
+    Error: string,
+  ): Promise<Task | null> {
+    const task = await this.taskModel.findOne({
+      where: { id },
+    });
+    if (!task) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    if (task.userId !== loggedInUserId) {
+      throw new ForbiddenException(`${Error}`);
+    }
+    return task || null;
   }
 }
