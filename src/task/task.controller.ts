@@ -8,8 +8,6 @@ import {
   Patch,
   UseGuards,
   Request,
-  // HttpStatus,
-  // HttpCode,
   ValidationPipe,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
@@ -45,7 +43,6 @@ export class TaskController {
     return this.taskService.getTaskById(id, loggedInUserId);
   }
 
-  // @HttpStatus(HttpCode.OK)
   @Patch(':id')
   async updateTask(
     @Param('id') id: number,
