@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { UserDTO } from './dto/user.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class UserService {
@@ -16,7 +17,14 @@ export class UserService {
 
   async login(userDTO: UserDTO): Promise<User | null> {
     return this.userModel.findOne({
-      where: { username: userDTO.username, password: userDTO.password },
+      where: {
+        username: {
+          [Op.iLike]: userDTO.username,
+        },
+        password: {
+          [Op.iLike]: userDTO.password,
+        },
+      },
     });
   }
 
