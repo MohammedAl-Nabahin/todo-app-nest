@@ -9,7 +9,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
       port: 3306,
       username: 'root',
       password: '',
-      database: 'todo',
+      database: 'todolist',
       autoLoadModels: true,
       synchronize: true,
     }),
