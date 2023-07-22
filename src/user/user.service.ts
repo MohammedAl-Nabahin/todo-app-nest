@@ -19,4 +19,11 @@ export class UserService {
       where: { username: userDTO.username, password: userDTO.password },
     });
   }
+
+  async findById(id: number): Promise<User | null> {
+    const user = this.userModel.findOne({
+      where: { id },
+    });
+    return user || null;
+  }
 }
