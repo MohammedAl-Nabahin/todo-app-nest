@@ -22,7 +22,10 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post('')
-  async addTask(@Body() taskDTO: TaskDTO, @Request() req: any) {
+  async addTask(
+    @Body(new ValidationPipe()) taskDTO: TaskDTO,
+    @Request() req: any,
+  ) {
     const id = parseInt(req.user.dataValues.id);
     taskDTO.userId = id;
     return this.taskService.addTask(taskDTO);
@@ -46,7 +49,7 @@ export class TaskController {
   @Patch(':id')
   async updateTask(
     @Param('id') id: number,
-    @Body() taskDTO: TaskDTO,
+    @Body(new ValidationPipe()) taskDTO: TaskDTO,
     @Request() req: any,
   ) {
     const userId = parseInt(req.user.dataValues.id);

@@ -1,5 +1,5 @@
 // src/auth/auth.service.ts
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.model';
@@ -23,7 +23,10 @@ export class AuthService {
   async login(userDTO: UserDTO): Promise<{ accessToken: string }> {
     const user = await this.userService.login(userDTO);
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new HttpException(
+        'Invalid credentials, username is wrong',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const payload = { sub: user.id };
     console.log(payload);
