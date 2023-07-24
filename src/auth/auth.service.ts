@@ -23,12 +23,12 @@ export class AuthService {
     const user = await this.userService.login(userDTO);
     if (!user) {
       throw new HttpException(
-        'Invalid credentials, username is wrong',
+        'Invalid credentials, username or password is wrong',
         HttpStatus.BAD_REQUEST,
       );
     }
     const payload = { sub: user.id };
-    console.log(payload);
+    console.log(payload.sub);
     const accessToken = this.jwtService.sign(payload);
     return { accessToken };
   }
