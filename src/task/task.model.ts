@@ -6,7 +6,10 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
-
+// {
+//   name:,
+//   underscored:true          ==> this used inside the @Table
+// }
 @Table
 export class Task extends Model<Task> {
   @Column

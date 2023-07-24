@@ -7,57 +7,51 @@ import {
   Delete,
   Patch,
   UseGuards,
-  Request,
-  ValidationPipe,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { TaskDTO } from './dto/task.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/decorators/user.decorator';
+import IUserInterface from 'src/user/user.interface';
 
 @Controller('tasks')
+//todo : make my own AuthGuard
 @UseGuards(AuthGuard('jwt'))
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post('')
-  async addTask(
-    @Body(new ValidationPipe()) taskDTO: TaskDTO,
-    @Request() req: any,
-  ) {
-    const id = parseInt(req.user.dataValues.id);
-    taskDTO.userId = id;
+  async addTask(@Body() taskDTO: TaskDTO, @User() user: IUserInterface) {
+    taskDTO.userId = user.id;
     return this.taskService.addTask(taskDTO);
   }
 
   @Get('')
-  async getTasks(@Request() req: any) {
-    const id = parseInt(req.user.dataValues.id);
-    const loggedInUserId = id;
-    return this.taskService.getUserTasks(loggedInUserId);
+  async getTasks(@User() user: IUserInterface) {
+    const userId = user.id;
+    return this.taskService.getUserTasks(userId);
   }
 
+  //todo: user @Query insted of Param
   @Get(':id')
-  async getTask(@Param('id', ValidationPipe) id: number, @Request() req: any) {
-    const userId = parseInt(req.user.dataValues.id);
-    const loggedInUserId = userId;
-    return this.taskService.getTaskById(id, loggedInUserId);
+  async getTask(@Param('id') id: number, @User() user: IUserInterface) {
+    const userId = user.id;
+    return this.taskService.getTaskById(id, userId);
   }
 
   @Patch(':id')
   async updateTask(
     @Param('id') id: number,
-    @Body(new ValidationPipe()) taskDTO: TaskDTO,
-    @Request() req: any,
+    @Body() taskDTO: TaskDTO,
+    @User() user: IUserInterface,
   ) {
-    const userId = parseInt(req.user.dataValues.id);
-    const loggedInUserId = userId;
-    return this.taskService.updateTask(id, taskDTO, loggedInUserId);
+    const userId = user.id;
+    return this.taskService.updateTask(id, taskDTO, userId);
   }
 
   @Delete(':id')
-  async deleteTask(@Param('id') id: number, @Request() req: any) {
-    const userId = parseInt(req.user.dataValues.id);
-    const loggedInUserId = userId;
-    return this.taskService.deleteTask(id, loggedInUserId);
+  async deleteTask(@Param('id') id: number, @User() user: IUserInterface) {
+    const userId = user.id;
+    return this.taskService.deleteTask(id, userId);
   }
 }
