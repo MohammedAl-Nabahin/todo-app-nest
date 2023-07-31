@@ -8,4 +8,7 @@ export class TaskDTO {
   @Length(3, 50)
   description: string;
   userId: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }

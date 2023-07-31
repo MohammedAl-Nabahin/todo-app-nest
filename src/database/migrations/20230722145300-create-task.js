@@ -18,14 +18,18 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      // createdAt: {
-      //   type: Sequelize.DATE,
-      //   allowNull: false,
-      // },
-      // updatedAt: {
-      //   type: Sequelize.DATE,
-      //   allowNull: false,
-      // },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      deletedAt: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -33,8 +37,6 @@ module.exports = {
           model: 'User',
           key: 'id',
         },
-        // onUpdate: 'CASCADE',
-        // onDelete: 'CASCADE',
       },
     });
   },
