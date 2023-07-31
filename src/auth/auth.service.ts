@@ -27,8 +27,9 @@ export class AuthService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const payload = { sub: user.id };
-    console.log(payload.sub);
+    const payload = {
+      sub: user.id,
+    };
     const accessToken = this.jwtService.sign(payload);
     return { accessToken };
   }
