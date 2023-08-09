@@ -15,4 +15,4 @@ import { SequelizeModule } from '@nestjs/sequelize';
     }),
   ],
 })
-export class ConfigModule {}
+export class ConfigerModule {}

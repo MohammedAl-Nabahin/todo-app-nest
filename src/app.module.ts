@@ -1,13 +1,14 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { ConfigModule } from './config/configer.module';
+import { ConfigerModule } from './config/configer.module';
 import { UserModule } from './user/user.module';
 import { TaskModule } from './task/task.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
+import { RolesGuard } from './auth/guard/role.guard';
 
 @Module({
-  imports: [ConfigModule, UserModule, TaskModule, AuthModule],
+  imports: [ConfigerModule, UserModule, TaskModule, AuthModule],
   providers: [
     {
       provide: APP_PIPE,
@@ -16,6 +17,10 @@ import { AuthGuard } from './auth/guard/auth.guard';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
