@@ -5,6 +5,7 @@ interface IUserInterface {
   password?: string;
   createdAt?: string;
   updatedAt?: string;
+  role: string;
 }
 
 export default IUserInterface;
