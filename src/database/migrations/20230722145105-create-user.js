@@ -19,16 +19,23 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      // createdAt: {
-      //   type: Sequelize.DATE,
-      //   allowNull: false,
-      // },
-      // updatedAt: {
-      //   type: Sequelize.DATE,
-      //   allowNull: false,
-      // },
-      // onUpdate: 'CASCADE',
-      // onDelete: 'CASCADE',
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      role: {
+        type: Sequelize.ENUM('user', 'admin'),
+        allowNull: false,
+        defaultValue: 'user',
+      },
+      isAdmin: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
     });
   },
   down: (queryInterface) => {

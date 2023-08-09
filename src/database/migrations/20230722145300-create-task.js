@@ -30,6 +30,18 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      deletedBy: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      createdBy: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      updatedBy: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
