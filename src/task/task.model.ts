@@ -30,4 +30,13 @@ export class Task extends Model<Task> {
 
   @Column
   deletedAt?: Date;
+
+  @Column
+  updatedBy?: number;
+
+  @Column
+  createdBy?: number;
+
+  @Column
+  deletedBy?: number;
 }

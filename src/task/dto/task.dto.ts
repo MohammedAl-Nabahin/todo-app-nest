@@ -11,4 +11,7 @@ export class TaskDTO {
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+  deletedBy?: number;
+  updatedBy: number;
+  createdBy: number;
 }

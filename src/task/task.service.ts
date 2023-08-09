@@ -7,6 +7,7 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import { Task } from './task.model';
 import { TaskDTO } from './dto/task.dto';
+import { Role } from 'src/auth/roles/role.enum';
 
 @Injectable()
 export class TaskService {
@@ -15,11 +16,12 @@ export class TaskService {
     private readonly taskModel: typeof Task,
   ) {}
 
-  async addTask(taskDTO: TaskDTO): Promise<Task> {
+  async addTask(taskDTO: TaskDTO, userId: number): Promise<Task> {
     const task = new Task();
     task.title = taskDTO.title;
     task.description = taskDTO.description;
     task.userId = taskDTO.userId;
+    task.createdBy = userId;
 
     return task.save();
   }
@@ -28,6 +30,10 @@ export class TaskService {
     return this.taskModel.findAll({
       where: { userId },
     });
+  }
+
+  async getAllTasks(): Promise<Task[]> {
+    return this.taskModel.findAll();
   }
 
   async getTaskById(id: number, loggedInUserId: number): Promise<Task | null> {
@@ -67,12 +73,15 @@ export class TaskService {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
 
-    if (task.userId !== loggedInUserId) {
-      throw new ForbiddenException(
-        'You do not have permission to update this task',
-      );
+    if (task.userId == loggedInUserId || task.user.role == Role.Admin) {
+      task.updatedBy = loggedInUserId;
+      await task.save();
+
+      return this.taskModel.findByPk(id);
     }
-    return this.taskModel.findByPk(id);
+    throw new ForbiddenException(
+      'You do not have permission to update this task',
+    );
   }
 
   async deleteTask(id: number, loggedInUserId: number): Promise<number> {
@@ -84,14 +93,16 @@ export class TaskService {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
     if (task) {
-      if (task.userId !== loggedInUserId) {
-        throw new ForbiddenException(
-          'You do not have permission to delete this task',
-        );
-      } else {
+      if (task.userId == loggedInUserId || task.user.role == Role.Admin) {
+        task.deletedBy = loggedInUserId;
+        await task.save();
         return this.taskModel.destroy({
           where: { id },
         });
+      } else {
+        throw new ForbiddenException(
+          'You do not have permission to delete this task',
+        );
       }
     }
   }
