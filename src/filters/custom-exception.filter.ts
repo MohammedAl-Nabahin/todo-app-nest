@@ -12,7 +12,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
-    const message = exception.message || 'Internal Server Error';
+    const message = exception.message;
 
     response.status(status).json({
       statusCode: status,
