@@ -6,13 +6,20 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
+import { DataTypes } from 'sequelize';
 
 @Table({ paranoid: true, timestamps: true })
 export class Task extends Model<Task> {
-  @Column
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: false,
+  })
   title: string;
 
-  @Column
+  @Column({
+    type: DataTypes.STRING,
+    allowNull: false,
+  })
   description: string;
 
   @ForeignKey(() => User)

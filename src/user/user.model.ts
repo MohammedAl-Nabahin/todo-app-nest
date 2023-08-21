@@ -4,10 +4,16 @@ import { Role } from 'src/auth/roles/role.enum';
 
 @Table
 export class User extends Model<User> {
-  @Column
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
   username: string;
 
-  @Column
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
   password: string;
 
   @HasMany(() => Task)
